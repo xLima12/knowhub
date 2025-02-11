@@ -1,0 +1,37 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon",
+    "production": "pm2 start index.js --name knowhub-backend",
+    "services:up": "docker compose -f infra/compose.yaml up -d",
+    "services:stop": "docker compose -f infra/compose.yaml stop",
+    "services:down": "docker compose -f infra/compose.yaml down"
+  },
+  "keywords": [],
+  "author": "Felipe Lima",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "1.20.3",
+    "consign": "0.1.6",
+    "cors": "2.8.5",
+    "dotenv": "^16.4.7",
+    "dotenv-expand": "^12.0.1",
+    "express": "4.21.2",
+    "jwt-simple": "0.5.6",
+    "knex": "^3.1.0",
+    "moment": "2.30.1",
+    "mongoose": "8.9.5",
+    "node-schedule": "2.1.1",
+    "passport": "0.7.0",
+    "passport-jwt": "4.0.1",
+    "pg": "8.13.1",
+    "pm2": "5.4.3"
+  },
+  "devDependencies": {
+    "nodemon": "3.1.9"
+  }
+}
