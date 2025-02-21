@@ -6,3 +6,21 @@ services:
       - ../.env.development
     ports:
       - "5432:5432"
+
+  mongo:
+    image: mongo:6.0
+    container_name: knowhub-mongo-db
+    restart: always
+    ports:
+      - "27017:27017"
+    env_file:
+      - ../.env.development
+
+  mongo-express:
+    image: mongo-express:1.0.0-alpha.4
+    container_name: knowhub-mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    env_file:
+      - ../.env.development
