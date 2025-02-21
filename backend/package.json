@@ -7,7 +7,9 @@
     "production": "pm2 start index.js --name knowhub-backend",
     "services:up": "docker compose -f infra/compose.yaml up -d",
     "services:stop": "docker compose -f infra/compose.yaml stop",
-    "services:down": "docker compose -f infra/compose.yaml down"
+    "services:down": "docker compose -f infra/compose.yaml down",
+    "migration:create": "knex migrate:make",
+    "migration:up": "knex migrate:latest"
   },
   "keywords": [],
   "author": "Felipe Lima",
