@@ -63,7 +63,6 @@ export default {
         { key: "path", label: "Caminho", sortable: true },
         { key: "actions", label: "Ações" },
       ],
-      path: [],
     };
   },
   methods: {
