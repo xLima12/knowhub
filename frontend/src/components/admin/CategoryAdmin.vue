@@ -12,7 +12,11 @@
           :readonly="mode === 'remove'"
         />
       </BFormGroup>
-      <BFormGroup label="Categoria Pai:" labe-for="category-parent">
+      <BFormGroup
+        label="Categoria Pai:"
+        labe-for="category-parent"
+        v-show="mode === 'save'"
+      >
         <BFormSelect
           id="category-parent"
           v-model="category.parentId"
