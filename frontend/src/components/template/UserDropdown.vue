@@ -8,10 +8,10 @@
       <i class="fa fa-angle-down"></i>
     </div>
     <div class="user-dropdown-content">
-      <router-link to="/admin"
+      <router-link to="/admin" v-if="user.admin"
         ><i class="fa fa-cogs"></i> Administração</router-link
       >
-      <a href><i class="fa fa-sign-out"></i> Sair</a>
+      <a href @click.prevent="logout"><i class="fa fa-sign-out"></i> Sair</a>
     </div>
   </div>
 </template>
@@ -19,6 +19,7 @@
 <script>
 import { mapState } from "vuex";
 import md5 from "blueimp-md5";
+import { userKey } from "@/global";
 
 export default {
   name: "UserDropdown",
@@ -27,6 +28,13 @@ export default {
     gravatarUrl() {
       const emailHash = md5(this.user.email.trim().toLowerCase());
       return `https://www.gravatar.com/avatar/${emailHash}?s=200&d=identicon`;
+    },
+  },
+  methods: {
+    logout() {
+      localStorage.removeItem(userKey);
+      this.$store.commit("setUser", null);
+      this.$router.push({ name: "auth" });
     },
   },
 };

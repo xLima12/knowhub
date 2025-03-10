@@ -1,5 +1,5 @@
 <template>
-  <div class="app" :class="{ 'hide-menu': !isMenuVisible }">
+  <div class="app" :class="{ 'hide-menu': !isMenuVisible || !user }">
     <div class="toast-container">
       <BToast
         v-for="toast in toasts"
@@ -15,35 +15,38 @@
     </div>
     <Header
       title="Code Noir - Know Hub"
-      :hideToggle="false"
-      :hideUserDropdown="false"
+      :hideToggle="!user"
+      :hideUserDropdown="!user"
     />
-    <Menu />
-    <Content />
+    <Menu v-if="user" />
+    <Loading v-if="validatingToken" />
+    <Content v-else />
     <Footer />
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import { baseApiUrl, userKey } from "@/global";
 import { reactive, provide } from "vue";
 import Header from "./components/template/Header.vue";
 import Menu from "./components/template/Menu.vue";
 import Content from "./components/template/Content.vue";
 import Footer from "./components/template/Footer.vue";
 import { mapState } from "vuex";
+import Loading from "./components/template/Loading.vue";
+import { inject } from "vue";
 
 export default {
   setup() {
-    // Lista de toasts ativos
     const toasts = reactive([]);
 
-    // Função para exibir um toast
     const showToast = (
       message = null,
       variant = "success",
       title = "Notificação"
     ) => {
-      const id = Date.now(); // Identificador único
+      const id = Date.now();
 
       const toastMessage =
         variant === "success"
@@ -52,7 +55,6 @@ export default {
 
       toasts.push({ id, show: true, title, message: toastMessage, variant });
 
-      // Remover o toast após 3 segundos
       setTimeout(() => {
         const index = toasts.findIndex((t) => t.id === id);
         if (index !== -1) {
@@ -61,14 +63,55 @@ export default {
       }, 3000);
     };
 
-    // Tornar a função disponível globalmente
     provide("showToast", showToast);
 
     return { toasts };
   },
   name: "App",
-  components: { Header, Menu, Content, Footer },
-  computed: mapState(["isMenuVisible"]),
+  components: { Header, Menu, Content, Footer, Loading },
+  computed: mapState(["isMenuVisible", "user"]),
+  data: function () {
+    return {
+      validatingToken: false,
+      currentBreakpoint: inject("mq").current || "md",
+    };
+  },
+  methods: {
+    async validateToken() {
+      this.validatingToken = true;
+
+      const json = localStorage.getItem(userKey);
+      const userData = JSON.parse(json);
+      this.$store.commit("setUser", null);
+
+      if (!userData) {
+        this.validatingToken = false;
+        this.$router.push({ name: "auth" });
+        return;
+      }
+
+      const res = await axios.post(`${baseApiUrl}/validateToken`, userData);
+
+      if (res.data) {
+        console.log(this.currentBreakpoint);
+        if (
+          this.currentBreakpoint === "sm" ||
+          this.currentBreakpoint === "xs"
+        ) {
+          this.$store.commit("toggleMenu", false);
+        }
+        this.$store.commit("setUser", userData);
+      } else {
+        localStorage.removeItem(userKey);
+        this.$router.push({ name: "auth" });
+      }
+
+      this.validatingToken = false;
+    },
+  },
+  created() {
+    this.validateToken();
+  },
 };
 </script>
 

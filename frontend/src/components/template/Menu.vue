@@ -16,6 +16,8 @@ import { mapState } from "vuex";
 import Tree from "primevue/tree";
 import { baseApiUrl } from "@/global";
 import axios from "axios";
+import { inject } from "vue";
+
 export default {
   name: "Menu",
   components: { Tree },
@@ -32,6 +34,7 @@ export default {
           emptyText: "Categoria não encontrada",
         },
       },
+      currentBreakpoint: inject("mq").current || "md",
     };
   },
   methods: {
@@ -55,6 +58,10 @@ export default {
     onNodeSelect(node) {
       if (node.to) {
         this.$router.push(node.to);
+      }
+      console.log(this.currentBreakpoint);
+      if (this.currentBreakpoint === "sm" || this.currentBreakpoint === "xs") {
+        this.$store.commit("toggleMenu", false);
       }
     },
   },
