@@ -17,6 +17,7 @@
     "vue": "^3.5.13",
     "vue-mq": "^1.0.1",
     "vue-router": "^4.5.0",
+    "vue3-mq": "^4.0.2",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
